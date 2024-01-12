@@ -1,3 +1,4 @@
+use chrono::NaiveDateTime;
 use diesel::prelude::*;
 
 use crate::database::PoolType;
@@ -11,6 +12,8 @@ pub struct User {
     pub last_name: String,
     pub email: String,
     pub password: String,
+    pub created_at: NaiveDateTime,
+    pub updated_at: NaiveDateTime,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
@@ -24,13 +27,13 @@ pub struct CreateUserDTO {
 
 impl User {
     pub fn create(pool: &PoolType, new_user: &User) -> Result<User, ApiError> {
-        use crate::schema::users;
+        use crate::schema::users::dsl::users;
 
         let conn = pool.get()?;
         diesel::insert_into(users)
             .values(new_user)
             .returning(User::as_returning())
-            .get_result(conn)?;
+            .get_result(conn.into())?;
 
         Ok(new_user.clone().into())
     }
