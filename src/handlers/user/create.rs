@@ -4,10 +4,11 @@ use validator::Validate;
 
 use crate::database::PoolType;
 use crate::errors::ApiError;
+use crate::helpers::respond::respond_json;
 use crate::helpers::validate::validate;
-use crate::models::user::{User, CreateUserDTO};
+use crate::models::user::{CreateUserDTO, User};
 
-#[derive(Debug, Serialize, Deserialize, PartialEq)]
+#[derive(Debug, Validate, Serialize, Deserialize, PartialEq)]
 pub struct CreateUserRequest {
     #[validate(length(
         min = 10,
@@ -36,7 +37,7 @@ pub struct CreateUserResponse {
     id: String,
 }
 
-pub fn create(
+pub async fn create(
     pool: Data<PoolType>,
     params: Json<CreateUserRequest>,
 ) -> Result<Json<CreateUserResponse>, ApiError> {
@@ -48,7 +49,10 @@ pub fn create(
         last_name: params.last_name.to_string(),
         email: params.email.to_string(),
         password: params.password.to_string(),
-    }.into();
-    
-    let user =  
+    }
+    .into();
+
+    let user = block(move || User::create(&pool, &new_user)).await?;
+
+    respond_json(user.into())
 }

@@ -7,7 +7,6 @@ use diesel::{
 
 use crate::config::{Config, CONFIG};
 
-#[serde(untagged)]
 #[derive(Clone, Deserialize, Debug, PartialEq)]
 pub enum DatabaseConnection {
     Cockroach,
