@@ -1,7 +1,7 @@
 #[macro_use]
 extern crate diesel;
 
-#[macro_use
+#[macro_use]
 extern crate lazy_static;
 
 #[macro_use]
@@ -15,7 +15,11 @@ extern crate validator_derive;
 
 mod config;
 mod database;
+mod errors;
+mod handlers;
+mod helpers;
 mod models;
+mod schema;
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
