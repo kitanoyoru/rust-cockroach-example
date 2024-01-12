@@ -1,2 +1,2 @@
-# rust-scylla-example
-Example of using ScyllaDB with Rust
+# rust-cockroach-example
+Example of using CockroachDB with Rust
